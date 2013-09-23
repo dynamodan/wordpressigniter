@@ -103,6 +103,7 @@ if(!is_admin()) {
 
 	$ci_path = get_option('wp_igniter_ci_path');
 	$cwd = getcwd();
+	$errmsg = '';
 	
 	// using the WordPressIgniter to set the CI constants:
 	if(!get_option('wp_igniter_native_constants')) {
@@ -126,7 +127,7 @@ if(!is_admin()) {
 	
 		// Is the system path correct?
 		if ( ! is_dir($system_path)) {
-			exit("Your system folder path $system_path does not appear to be set correctly.");
+			$errmsg = "Your system folder path $system_path does not appear to be set correctly.";
 		}
 
 		// The name of THIS file
@@ -151,17 +152,21 @@ if(!is_admin()) {
 			define('APPPATH', $application_folder.'/');
 		} else {
 			if ( ! is_dir(BASEPATH.$application_folder.'/')) {
-				exit("Your application folder path $application_folder does not appear to be set correctly.");
+				$errmsg = "Your application folder path $application_folder does not appear to be set correctly.";
 			}
 	
 			define('APPPATH', BASEPATH.$application_folder.'/');
 		}
 		
 		// load the ci bootstrap file here instead of letting CI's native index.php do it: 
-		ob_start();
-		require_once BASEPATH.'core/CodeIgniter.php';
-		$CI_OUTPUT = ob_get_contents();
-		ob_end_clean();
+		if($errmsg == '') { 
+			ob_start();
+			require_once BASEPATH.'core/CodeIgniter.php';
+			$CI_OUTPUT = ob_get_contents();
+			ob_end_clean();
+		} else {
+			$CI_OUTPUT = $errmsg;
+		}
 	}
 	
 	// using the CI front controller to set the constants:
@@ -173,6 +178,8 @@ if(!is_admin()) {
 			$CI_OUTPUT = ob_get_contents();
 			ob_end_clean();
 			chdir($cwd);
+		} else {
+			$CI_OUTPUT = "Couldn't locate CodeIgniter native index.php file.";
 		}
 	}
 	
