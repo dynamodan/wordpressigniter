@@ -1,7 +1,7 @@
 === WordPressIgniter ===
-================
 
 Contributors: dynamodan
+Donate link: http://www.dynamodan.com/donate/
 Tags: web application framework, model-view-controller, MVC framework, MVC, framework, CodeIgniter, theme development, plugin development
 Requires at least: 3.6
 Tested up to: 3.6.1
@@ -20,7 +20,7 @@ Why a CodeIgniter/Wordpress integration plugin?
 
 Why did I create this plugin, even though some others already exist? Because I wanted to:
 - easily integrate CodeIgniter without invading its core very much, or optionally, not at all.
-- show CodeIgniter output in a page, preserving all menu structure, template structure etc.
+- show CodeIgniter output in a page, preserving all WordPress menu structure, template structure etc.
 - not require template editing, so that templates can be easily swapped out and the CodeIgniter itegration still work.
 - allow customizing of the CodeIgniter APPPATH and BASEPATH variables, so that the system and application folders can be put somewhere outside the plugins folder (or docroot altogether for that matter)
 
@@ -35,6 +35,7 @@ and then install it on your web site.
 2. Create a page, and give it a meaningful title. Note that it must be a "page", not a post.
 
 3. Install this plugin to your WordPress instance on your web site, and activate it.
+	(for the most up-to-date bleeding edge version, get it from github: https://github.com/dynamodan/wordpressigniter
 
 4. Go to the WordPressIgniter settings, and set the Page Override to the title of the page you created in step #1.  It must match verbatim.
 
