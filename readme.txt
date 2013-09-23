@@ -23,7 +23,7 @@ Why did I create this plugin, even though some others already exist? Because I w
 - show CodeIgniter output in a page, preserving all WordPress menu structure, template structure etc.
 - not require template editing, so that templates can be easily swapped out and the CodeIgniter itegration still work.
 - allow customizing of the CodeIgniter APPPATH and BASEPATH variables, so that the system and application folders can be put somewhere outside the plugins folder (or docroot altogether for that matter)
-
+- handle segmented urls in CodeIgniter fashion, including paths that aren't valid in WordPress (i.e. via WordPress 404 hooks), and dispatch to appropriate CodeIgniter controller functions.
 
 == Installation ==
 
