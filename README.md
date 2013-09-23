@@ -1,9 +1,29 @@
-wordpressigniter
+WordPressIgniter
 ================
 
+Contributors: dynamodan
+Tags: web application framework, model-view-controller, MVC framework, MVC, framework, CodeIgniter, theme development, plugin development
+Requires at least: 3.6
+Tested up to: 3.6.1
+Stable tag: 1.0
+
+== Description ==
 A WordPress plugin that integrates CodeIgniter
 
-Instructions:
+Why a CodeIgniter/Wordpress integration plugin?
+- I (along with many others) like CodeIgniter for it's features such as ActiveRecord and MVC disciplines.
+- I'm getting tired of building custom user, login, and session management systems for CodeIgniter. WordPress has them already.
+- I'm getting tired of building custom look and feel and templates for CodeIgniter, WordPress already is that, and has thousands of themes available.
+- I'm getting tired of building custom feature X for CodeIgniter, when it may already exist in WordPress either natively or as a plugin.
+
+Why did I create this plugin, even though some others already exist? Because I wanted to:
+- easily integrate CodeIgniter without invading its core very much, or optionally, not at all.
+- show CodeIgniter output in a page, preserving all menu structure, template structure etc.
+- not require template editing, so that templates can be easily swapped out and the CodeIgniter itegration still work.
+- allow customizing of the CodeIgniter APPPATH and BASEPATH variables, so that the system and application folders can be put somewhere outside the plugins folder (or docroot altogether for that matter)
+
+
+== Instructions ==
 
 We'll assume that you already have a working WordPress blog.
 
@@ -22,14 +42,15 @@ and then install it on your web site.
 
 7. Visit the page you set in step #1.  You should see the standard CodeIgniter welcome content, or your CodeIgniter project's output if you already have one that you are using with this plugin.  There may be some troubleshooting messages instead.
 
-TIPS:
+== Tips ==
 
-- If your CodeIgniter controller sets the $this->content['page_title'], such as `$this->content['page_title'] = 'Blast off!'; ` then this plugin will set the template-rendered title to "Blast off!" via a WordPress API registered 'the_title' filter hook.
+- If your CodeIgniter controller sets the $this->content['page_title'], such as `$this->content['page_title'] = 'Blast off!'; `
+then this plugin will set the template-rendered title to "Blast off!" via a WordPress API registered 'the_title' filter hook.
 - Just so you know, I'm setting the $current_user to a global, so that CodeIgniter can check if it's being run as a logged in user etc.  If this bothers you or causes your site any security issues, please don't complain to me, just don't use this plugin.
 
-TODO:
+== TODO ==
 
-(I don't know if these are even possible, or I would have already done them)
+(I don't know if these are even possible, or I might have already done them)
 
-- provide a way to make CodeIgniter automatically use WordPress' database settings, from within the plugin.
+- provide a way to make CodeIgniter automatically use WordPress' database settings, from within the plugin (yes I know I could intrude CodeIgniter core to do this, but it's what I wanted to avoid)
 - provide a mechanism to instantiate CodeIgniter *only* on the overridden page, rather than all frontend urls.
