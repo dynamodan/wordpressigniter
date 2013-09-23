@@ -1,4 +1,4 @@
-WordPressIgniter
+=== WordPressIgniter ===
 ================
 
 Contributors: dynamodan
@@ -6,8 +6,10 @@ Tags: web application framework, model-view-controller, MVC framework, MVC, fram
 Requires at least: 3.6
 Tested up to: 3.6.1
 Stable tag: 1.0
+License GPLv2
 
 == Description ==
+
 A WordPress plugin that integrates CodeIgniter
 
 Why a CodeIgniter/Wordpress integration plugin?
@@ -23,7 +25,7 @@ Why did I create this plugin, even though some others already exist? Because I w
 - allow customizing of the CodeIgniter APPPATH and BASEPATH variables, so that the system and application folders can be put somewhere outside the plugins folder (or docroot altogether for that matter)
 
 
-== Instructions ==
+== Installation ==
 
 We'll assume that you already have a working WordPress blog.
 
@@ -34,7 +36,7 @@ and then install it on your web site.
 
 3. Install this plugin to your WordPress instance on your web site, and activate it.
 
-4. Go to the WordPressIgniter(tm) settings, and set the Page Override to the title of the page you created in step #1.  It must match verbatim.
+4. Go to the WordPressIgniter settings, and set the Page Override to the title of the page you created in step #1.  It must match verbatim.
 
 5. Set the CodeIgniter Path setting to point to the folder containing CodeIgniter's index.php front controller file.
 
