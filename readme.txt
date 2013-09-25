@@ -13,17 +13,26 @@ License GPLv2
 A WordPress plugin that integrates CodeIgniter
 
 Why a CodeIgniter/Wordpress integration plugin?
-- I (along with many others) like CodeIgniter for it's features such as ActiveRecord and MVC disciplines.
-- I'm getting tired of building custom user, login, and session management systems for CodeIgniter. WordPress has them already.
-- I'm getting tired of building custom look and feel and templates for CodeIgniter, WordPress already is that, and has thousands of themes available.
-- I'm getting tired of building custom feature X for CodeIgniter, when it may already exist in WordPress either natively or as a plugin.
+
+1. I (along with many others) like CodeIgniter for it's features such as ActiveRecord and MVC disciplines, plus I have a ton of cool libs and stuff in CodeIgniter that I would like to use in the WordPress environment
+
+2. I'm getting tired of building custom user, login, and session management systems for CodeIgniter. WordPress has them already.
+
+3. I'm getting tired of building custom look and feel and templates for CodeIgniter, WordPress already is that, and has thousands of themes available.
+
+4. I'm getting tired of building custom feature X for CodeIgniter, when it may already exist in WordPress either natively or as a plugin.
 
 Why did I create this plugin, even though some others already exist? Because I wanted to:
-- easily integrate CodeIgniter without invading its core very much, or optionally, not at all.
-- show CodeIgniter output in a page, preserving all WordPress menu structure, template structure etc.
-- not require template editing, so that templates can be easily swapped out and the CodeIgniter itegration still work.
-- allow customizing of the CodeIgniter APPPATH and BASEPATH variables, so that the system and application folders can be put somewhere outside the plugins folder (or docroot altogether for that matter)
-- handle segmented urls in CodeIgniter fashion, including paths that aren't valid in WordPress (i.e. via WordPress 404 hooks), and dispatch to appropriate CodeIgniter controller functions.
+
+1. easily integrate CodeIgniter without invading its core very much, or optionally, not at all.
+
+2. show CodeIgniter output in a page, preserving all WordPress menu structure, template structure etc.
+
+3. not require template editing, so that templates can be easily swapped out and the CodeIgniter itegration still work.
+
+4. allow customizing of the CodeIgniter APPPATH and BASEPATH variables, so that the system and application folders can be put somewhere outside the plugins folder (or docroot altogether for that matter)
+
+5. handle segmented urls in CodeIgniter fashion, including paths that aren't valid in WordPress (i.e. via WordPress 404 hooks), and dispatch to appropriate CodeIgniter controller functions.
 
 == Installation ==
 
