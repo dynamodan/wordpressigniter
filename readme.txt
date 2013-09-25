@@ -49,7 +49,9 @@ and then install it on your web site.
 
 - If your CodeIgniter controller sets the $this->content['page_title'], such as `$this->content['page_title'] = 'Blast off!'; `
 then this plugin will set the template-rendered title to "Blast off!" via a WordPress API registered 'the_title' filter hook.
-- Just so you know, I'm setting the $current_user to a global, so that CodeIgniter can check if it's being run as a logged in user etc.  If this bothers you or causes your site any security issues, please don't complain to me, just don't use this plugin.
+- If you choose to tick the "CodeIgniter grabs all SEO urls" checkbox, beware that CodeIgniter will return its own 404 page (along
+with http header!) on any non-root urls, i.e. permalinks.  This behaviour can be set within CodeIgniter by adjusting the routes.php
+file to point to a valid controller, like this: `$route['404_override'] = 'welcome';`
 
 == TODO ==
 
