@@ -25,8 +25,8 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 */
 
 // global! gotta keep things global, or CI just barfs!
-global $CI_OUTPUT;
-global $current_user;
+global $CI_OUTPUT;  // CodeIgniter's output, caught with ob_start() and ob_get_contents()
+global $CI_REQUEST; // so that CodeIgniter knows about the URI for segmentation, otherwise everything goes through the default controller
 global $wp_query;
 
 // these functions are gotten from pluggable.php, because we need them now, but
@@ -105,6 +105,12 @@ if(!is_admin()) {
 	$cwd = getcwd();
 	$errmsg = '';
 	
+	
+	// always force CodeIgniter to load it's default controller, 
+	// unless the user specifically has a hook to get the $_SERVER['REQUEST_URI'] back:
+	$CI_REQUEST = $_SERVER['REQUEST_URI'];
+	if(!get_option('wp_igniter_ci_urihook')) { $_SERVER['REQUEST_URI'] = '/'; }
+
 	// using the WordPressIgniter to set the CI constants:
 	if(!get_option('wp_igniter_native_constants')) {
 		$application_folder = $ci_path.'application/';
@@ -157,9 +163,10 @@ if(!is_admin()) {
 	
 			define('APPPATH', BASEPATH.$application_folder.'/');
 		}
-		
+
 		// load the ci bootstrap file here instead of letting CI's native index.php do it: 
-		if($errmsg == '') { 
+		
+		if($errmsg == '') {
 			ob_start();
 			require_once BASEPATH.'core/CodeIgniter.php';
 			$CI_OUTPUT = ob_get_contents();
@@ -183,6 +190,7 @@ if(!is_admin()) {
 		}
 	}
 	
+	$_SERVER['REQUEST_URI'] = $CI_REQUEST;
 	error_reporting(0);
 }
 

@@ -25,6 +25,7 @@ if(!class_exists('WP_igniter_Settings'))
         	register_setting('wp_igniter-group', 'wp_igniter_native_constants');
         	register_setting('wp_igniter-group', 'wp_igniter_custom_apppath');
         	register_setting('wp_igniter-group', 'wp_igniter_custom_sysfolder');
+        	register_setting('wp_igniter-group', 'wp_igniter_ci_urihook');
 
         	// add your settings section
         	add_settings_section(
@@ -68,6 +69,17 @@ if(!class_exists('WP_igniter_Settings'))
             );
             
             add_settings_field(
+                'wp_igniter-ci_uri_hook', 
+                'CodeIgniter grabs all SEO urls<br />(use with caution!!)', 
+                array(&$this, 'settings_field_input_checkbox'), 
+                'wp_igniter', 
+                'wp_igniter-section',
+                array(
+                    'field' => 'wp_igniter_ci_urihook'
+                )
+            );
+            
+            add_settings_field(
                 'wp_igniter-native_constants', 
                 'Use CodeIgniter\'s native index.php to generate constants (i.e. APPPATH, BASEPATH)', 
                 array(&$this, 'settings_field_input_checkbox'), 
@@ -77,7 +89,6 @@ if(!class_exists('WP_igniter_Settings'))
                     'field' => 'wp_igniter_native_constants'
                 )
             );
-            
             
             add_settings_field(
             	null,
