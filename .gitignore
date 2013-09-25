@@ -1,1 +1,5 @@
 *.htaccess
+.svn
+tags/*
+branches/*
+trunk/*
