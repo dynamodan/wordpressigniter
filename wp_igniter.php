@@ -27,64 +27,64 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 // global! gotta keep things global, or CI just barfs!
 global $CI_OUTPUT;  // CodeIgniter's output, caught with ob_start() and ob_get_contents()
 global $CI_REQUEST; // so that CodeIgniter knows about the URI for segmentation, otherwise everything goes through the default controller
-global $wp_query;
 
-// these functions are gotten from pluggable.php, because we need them now, but
-// they don't get loaded until after the plugins are loaded!
-if ( !function_exists('get_user_by') && !is_admin()) {
-function get_user_by( $field, $value ) {
-	$userdata = WP_User::get_data_by( $field, $value );
-
-	if ( !$userdata )
-		return false;
-
-	$user = new WP_User;
-	$user->init( $userdata );
-
-	return $user;
-}
-}
-
-if ( !function_exists('wp_parse_auth_cookie') && !is_admin()) {
-function wp_parse_auth_cookie($cookie = '', $scheme = '') {
-	if ( empty($cookie) ) {
-		switch ($scheme){
-			case 'auth':
-				$cookie_name = AUTH_COOKIE;
-				break;
-			case 'secure_auth':
-				$cookie_name = SECURE_AUTH_COOKIE;
-				break;
-			case "logged_in":
-				$cookie_name = LOGGED_IN_COOKIE;
-				break;
-			default:
-				if ( is_ssl() ) {
-					$cookie_name = SECURE_AUTH_COOKIE;
-					$scheme = 'secure_auth';
-				} else {
-					$cookie_name = AUTH_COOKIE;
-					$scheme = 'auth';
-				}
-	    }
-
-		if ( empty($_COOKIE[$cookie_name]) )
-			return false;
-		$cookie = $_COOKIE[$cookie_name];
-	}
-
-	$cookie_elements = explode('|', $cookie);
-	if ( count($cookie_elements) != 3 )
-		return false;
-
-	list($username, $expiration, $hmac) = $cookie_elements;
-
-	return compact('username', 'expiration', 'hmac', 'scheme');
-}
-}
-
-// never run the codeigniter stack when inside of admin (well, maybe!)
+// most of this gets ignored if we're not in the main site, i.e. if we're in admin, if we're in user registration etc etc
 if(!is_admin()) {
+	
+	// these functions are gotten from pluggable.php, because we need them now, but
+	// they don't get loaded until after the plugins are loaded!
+	if ( !function_exists('get_user_by')) {
+	function get_user_by( $field, $value ) {
+		$userdata = WP_User::get_data_by( $field, $value );
+	
+		if ( !$userdata )
+			return false;
+	
+		$user = new WP_User;
+		$user->init( $userdata );
+	
+		return $user;
+	}
+	}
+	
+	if ( !function_exists('wp_parse_auth_cookie')) {
+	function wp_parse_auth_cookie($cookie = '', $scheme = '') {
+		if ( empty($cookie) ) {
+			switch ($scheme){
+				case 'auth':
+					$cookie_name = AUTH_COOKIE;
+					break;
+				case 'secure_auth':
+					$cookie_name = SECURE_AUTH_COOKIE;
+					break;
+				case "logged_in":
+					$cookie_name = LOGGED_IN_COOKIE;
+					break;
+				default:
+					if ( is_ssl() ) {
+						$cookie_name = SECURE_AUTH_COOKIE;
+						$scheme = 'secure_auth';
+					} else {
+						$cookie_name = AUTH_COOKIE;
+						$scheme = 'auth';
+					}
+			}
+	
+			if ( empty($_COOKIE[$cookie_name]) )
+				return false;
+			$cookie = $_COOKIE[$cookie_name];
+		}
+	
+		$cookie_elements = explode('|', $cookie);
+		if ( count($cookie_elements) != 3 )
+			return false;
+	
+		list($username, $expiration, $hmac) = $cookie_elements;
+	
+		return compact('username', 'expiration', 'hmac', 'scheme');
+	}
+	}
+	
 	if($cookie_elements = wp_parse_auth_cookie($_COOKIE[LOGGED_IN_COOKIE], 'logged_in')) {
 		
 		extract($cookie_elements, EXTR_OVERWRITE);
@@ -109,6 +109,8 @@ if(!is_admin()) {
 	// always force CodeIgniter to load it's default controller, 
 	// unless the user specifically has a hook to get the $_SERVER['REQUEST_URI'] back:
 	$CI_REQUEST = $_SERVER['REQUEST_URI'];
+	$get_backup = $_GET; // because CodeIgniter clobbers it, but parts of wordpress need it
+	
 	if(!get_option('wp_igniter_ci_urihook')) { $_SERVER['REQUEST_URI'] = '/'; }
 
 	// using the WordPressIgniter to set the CI constants:
@@ -190,9 +192,12 @@ if(!is_admin()) {
 		}
 	}
 	
+	$_GET = $get_backup;
 	$_SERVER['REQUEST_URI'] = $CI_REQUEST;
 	error_reporting(0);
+
 }
+// END if(!is_admin())
 
 
 // now for the WP Igniter class itself:
@@ -203,21 +208,26 @@ if(!class_exists('WP_Igniter')) {
 		 */
 		 
 		var $triggered = false;
+		var $page_matches = array();
  		 
 		public function __construct() {
-        	// Initialize Settings
-            require_once(sprintf("%s/settings.php", dirname(__FILE__)));
-        	$WP_Igniter_Settings = new WP_Igniter_Settings();
-            
-        	if(get_option('wp_igniter_handle_404')) {
-        		add_action('template_redirect', array(&$this, 'main_page'), 1);
-        	}
-            
-           	add_filter('the_title', array(&$this, 'main_title'));
-           	add_filter('the_content', array(&$this, 'main_content'));
-          
+			// Initialize Settings
+			require_once(sprintf("%s/settings.php", dirname(__FILE__)));
+			$WP_Igniter_Settings = new WP_Igniter_Settings();
+			
+			if(!is_admin()) {
+				if(get_option('wp_igniter_handle_404')) {
+					add_action('template_redirect', array(&$this, 'main_page'), 1);
+				}
+				
+				add_filter('the_title', array(&$this, 'main_title'));
+				add_filter('the_content', array(&$this, 'main_content'));
+				
+	 			$this->page_matches = explode(',', get_option('wp_igniter_page_override'));
+			}
+		  
  		} // END public function __construct()
-	    
+		
 		
  		public function main_page() {
  			global $wp_query;
@@ -229,15 +239,17 @@ if(!class_exists('WP_Igniter')) {
  			
  			// "fictitiously" enter our target post here, patching up some variables here and there
  			// to make the menu work properly etc
- 			$page = &get_page_by_title(get_option('wp_igniter_page_override'));
- 			rewind_posts();
- 			$wp_query->is_singular = true;
- 			$wp_query->found_posts = 1;
- 			$wp_query->post_count = 1;
- 			$wp_query->queried_object = $page;
- 			$wp_query->queried_object_id = $page->ID;
- 			$wp_query->posts = array($page);
- 			$wp_query->post = $page;
+ 			if(count($this->page_matches) > 0) {
+				$page = &get_page_by_title($this->page_matches[0]);
+				rewind_posts();
+				$wp_query->is_singular = true;
+				$wp_query->found_posts = 1;
+				$wp_query->post_count = 1;
+				$wp_query->queried_object = $page;
+				$wp_query->queried_object_id = $page->ID;
+				$wp_query->posts = array($page);
+				$wp_query->post = $page;
+			}
  		}
  		
 		public function main_content($content) {
@@ -259,7 +271,7 @@ if(!class_exists('WP_Igniter')) {
 		
 		public function main_title($content) {
 			// trigger by title
-			if($content != get_option('wp_igniter_page_override')) { return $content; }
+			if(!in_array($content, $this->page_matches)) { return $content; }
 			
 			// only do this for the title within the post, not on the menu: (TODO: make a switch to alter this behaviour)
 			if(did_action('the_post') == 0) { return $content; }
@@ -305,16 +317,16 @@ if(class_exists('WP_igniter')) {
 	// instantiate the plugin class
 	$wp_igniter = new WP_Igniter();
 	
-    // Add a link to the settings page onto the plugin page
-    if(isset($wp_igniter)) {
-        // Add the settings link to the plugins page
-        function plugin_settings_link($links) { 
-            $settings_link = '<a href="options-general.php?page=wp_igniter">Settings</a>'; 
-            array_unshift($links, $settings_link); 
-            return $links; 
-        }
+	// Add a link to the settings page onto the plugin page
+	if(isset($wp_igniter)) {
+		// Add the settings link to the plugins page
+		function plugin_settings_link($links) { 
+			$settings_link = '<a href="options-general.php?page=wp_igniter">Settings</a>'; 
+			array_unshift($links, $settings_link); 
+			return $links; 
+		}
 
-        $plugin = plugin_basename(__FILE__); 
-        add_filter("plugin_action_links_$plugin", 'plugin_settings_link');
-    }
+		$plugin = plugin_basename(__FILE__); 
+		add_filter("plugin_action_links_$plugin", 'plugin_settings_link');
+	}
 }
