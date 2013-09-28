@@ -5,7 +5,7 @@ Donate link: http://www.dynamodan.com/donate/
 Tags: web application framework, model-view-controller, MVC framework, MVC, framework, CodeIgniter, theme development, plugin development
 Requires at least: 3.3
 Tested up to: 3.6.1
-Stable tag: 1.1
+Stable tag: 1.2
 License GPLv2
 
 == Description ==
@@ -71,10 +71,13 @@ file to point to a valid controller, like this: `$route['404_override'] = 'welco
 
 == Changelog ==
 
-== 1.1 ==
+= 1.2 =
+* fixed revision number in this readme file
+
+= 1.1 =
 * fixed parameter bug caused by CodeIgniter erasing the $_GET variable
 * fixed some bugs caused by setting $current_user, now we set this in our own $CI_USER variable
 * added a feature to allow comma-separated page titles that match for inserting CodeIgniter ouput
 
-== 1.0 ==
+= 1.0 =
 * initial release
