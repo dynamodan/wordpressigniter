@@ -4,7 +4,7 @@ Contributors: dynamodan
 Donate link: http://www.dynamodan.com/donate/
 Tags: web application framework, model-view-controller, MVC framework, MVC, framework, CodeIgniter, theme development, plugin development
 Requires at least: 3.3
-Tested up to: 3.6.1
+Tested up to: 3.8.1
 Stable tag: 1.2
 License GPLv2
 
