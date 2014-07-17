@@ -256,7 +256,16 @@ if(!class_exists('WP_Igniter')) {
  		
 		public function main_content($content) {
 			global $wp_query, $CI_OUTPUT;
-			if(!$wp_query->is_page) { return $content; }
+
+			// check for the shortcode: (I know this isn't EXACTLY the wordpress way of doing shortcodes)
+			$shortcode_found = strpos($content, '[wordpressigniter]');
+			
+			// not a page, and, BOTH 1. not shortcoding posts, and 2. not finding a shortcode
+			if(!$wp_query->is_page && !get_option('wp_igniter_shortcode_posts') && $shortcode_found !== false) {
+				return $content;
+			}
+			
+			// triggered by a 404, so we should handle as such:
 			if($this->triggered) {
 				$content = 'Congrats, you got to the WordPressIgniter Plugin!';
 				if(!get_option('wp_igniter_ci_path')) { $content .= "<br />You need to set the path to the CodeIgniter front controller."; return $content; } 
@@ -268,10 +277,23 @@ if(!class_exists('WP_Igniter')) {
 				
 			}
 			
-			return $content;
+			// use the shortcode:
+			else if($shortcode_found === false) {
+				return $content;
+			}
+			
+			return $CI_OUTPUT;
+			
 		}
 		
 		public function main_title($content) {
+			// maybe CI set a title already:
+			if(function_exists('get_instance')) {
+				$ci = &get_instance();
+				if($this->triggered && isset($ci->content['page_title'])) { $ci_title = $ci->content['page_title']; }
+				// return $ci_title;
+			}
+			
 			// trigger by title
 			if(!in_array($content, $this->page_matches)) { return $content; }
 			

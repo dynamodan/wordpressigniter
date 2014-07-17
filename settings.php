@@ -19,6 +19,7 @@ if(!class_exists('WP_igniter_Settings'))
         public function admin_init()
         {
         	// register your plugin's settings
+        	register_setting('wp_igniter-group', 'wp_igniter_shortcode_posts');
         	register_setting('wp_igniter-group', 'wp_igniter_page_override');
         	register_setting('wp_igniter-group', 'wp_igniter_ci_path');
         	register_setting('wp_igniter-group', 'wp_igniter_handle_404');
@@ -35,6 +36,17 @@ if(!class_exists('WP_igniter_Settings'))
         	    'wp_igniter'
         	);
         	
+            add_settings_field(
+                'wp_igniter_shortcode_posts', 
+                'Trigger with [wordpressigniter] shortcode in posts, too.', 
+                array(&$this, 'settings_field_input_checkbox'), 
+                'wp_igniter', 
+                'wp_igniter-section',
+                array(
+                    'field' => 'wp_igniter_shortcode_posts'
+                )
+            );
+            
             add_settings_field(
                 'wp_igniter-page_override', 
                 'Page Override', 
@@ -130,7 +142,9 @@ if(!class_exists('WP_igniter_Settings'))
             ?>
             These settings control how WordPressIgniter loads CodeIgniter.
             <ul style="list-style:initial;list-style-position:inside;">
-            <li>Page Override setting is how you engage CodeIgniter's output into the title and content area of your template.</li>
+            <li>Engage CodeIgniter content into your blog by inserting the [wordpressigniter] shortcode into pages.</li>
+            <li>Check the &quot;Trigger with [wordpressigniter] shortcode in posts, too&quot; box so that CI content shows in posts. (Most useful with the shortcode after the "read more" tag.)</li>
+            <li>Page Override setting is deprecated and will disappear in future versions. Leave this blank and use the [wordpressigniter] shortcode instead.</li>
             <li>The CI Path points to CI's index.php front controller.</li>
             <li>The CI Path can be relative, but depending on your server settings, but you may need to edit the CI's index.php if you choose to use CI's index.php to generate constants.</li>
             <ul>

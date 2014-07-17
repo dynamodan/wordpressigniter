@@ -4,8 +4,8 @@ Contributors: dynamodan
 Donate link: http://www.dynamodan.com/donate/
 Tags: web application framework, model-view-controller, MVC framework, MVC, framework, CodeIgniter, theme development, plugin development
 Requires at least: 3.3
-Tested up to: 3.8.1
-Stable tag: 1.2
+Tested up to: 3.9.1
+Stable tag: 1.3
 License GPLv2
 
 == Description ==
@@ -41,18 +41,19 @@ We'll assume that you already have a working WordPress blog.
 1. If you don't already have CodeIgniter, learn what it is here: http://ellislab.com/codeigniter
 and then install it on your web site.
 
-2. Create a page, and give it a meaningful title. Note that it must be a "page", not a post.
+2. Create a page, and give it a meaningful title. Note that it must be a "page", not a post.  Insert the [wordpressigniter] shortcode anywhere in the body. (This will cause CodeIgniter to replace the entire contents of the page.)
 
 3. Install this plugin to your WordPress instance on your web site, and activate it.
 	(for the most up-to-date bleeding edge version, get it from github: https://github.com/dynamodan/wordpressigniter
 
-4. Go to the WordPressIgniter settings, and set the Page Override to the title of the page you created in step #1.  It must match verbatim.
 
-5. Set the CodeIgniter Path setting to point to the folder containing CodeIgniter's index.php front controller file.
+4. Go to the WordPressIgniter settings, and set the CodeIgniter Path setting to point to the folder containing CodeIgniter's index.php front controller file.
 
-6. Optionally, set your own custom APPPATH and BASEPATH constants to point to custom paths for the system and application folders, if you choose to put them in another place besides the CodeIgniter defaults.
+5. Optionally, set your own custom APPPATH and BASEPATH constants to point to custom paths for the system and application folders, if you choose to put them in another place besides the CodeIgniter defaults.
 
-7. Visit the page you set in step #1.  You should see the standard CodeIgniter welcome content, or your CodeIgniter project's output if you already have one that you are using with this plugin.  There may be some troubleshooting messages instead.
+6. Visit the page you set in step #1.  You should see the standard CodeIgniter welcome content, or your CodeIgniter project's output if you already have one that you are using with this plugin.  There may be some troubleshooting messages instead.
+
+7. Go to the WordPressIgniter settings, and optionally check the "Trigger with [wordpressigniter] shortcode in posts, too" checkbox.  This enables you to use a blog post containing the [wordpressigniter] shortcode to integrate CodeIgniter as well.  Note that the [wordpressigniter] shortcode will show in the list views, so I recommend putting it after a "Read More" tag.
 
 == Tips ==
 
@@ -70,6 +71,9 @@ file to point to a valid controller, like this: `$route['404_override'] = 'welco
 - provide a mechanism to instantiate CodeIgniter *only* on the overridden page, rather than all frontend urls.
 
 == Changelog ==
+
+= 1.3 =
+* implemented [wordpressigniter] shortcode, which will deprecate the Page Override setting, as it was quite buggy and had some limitations.
 
 = 1.2 =
 * fixed revision number in this readme file
