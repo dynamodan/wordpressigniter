@@ -33,21 +33,7 @@ $CI_USER = null;
 // most of this gets ignored if we're not in the main site, i.e. if we're in admin, if we're in user registration etc etc
 if(!is_admin()) {
 	
-	// these functions are gotten from pluggable.php, because we need them now, but
-	// they don't get loaded until after the plugins are loaded!
-	if ( !function_exists('get_user_by')) {
-	function get_user_by( $field, $value ) {
-		$userdata = WP_User::get_data_by( $field, $value );
-	
-		if ( !$userdata )
-			return false;
-	
-		$user = new WP_User;
-		$user->init( $userdata );
-	
-		return $user;
-	}
-	}
+	include_once(ABSPATH . 'wp-includes/pluggable.php');
 	
 	if ( !function_exists('wp_parse_auth_cookie')) {
 	function wp_parse_auth_cookie($cookie = '', $scheme = '') {
@@ -77,17 +63,19 @@ if(!is_admin()) {
 			$cookie = $_COOKIE[$cookie_name];
 		}
 	
-		$cookie_elements = explode('|', $cookie);
-		if ( count($cookie_elements) != 3 )
-			return false;
-	
-		list($username, $expiration, $hmac) = $cookie_elements;
-	
-		return compact('username', 'expiration', 'hmac', 'scheme');
+		if( $cookie ) {
+			$cookie_elements = explode('|', $cookie);
+			if ( count($cookie_elements) != 3 )
+				return false;
+		
+			list($username, $expiration, $hmac) = $cookie_elements;
+		
+			return compact('username', 'expiration', 'hmac', 'scheme');
+		}
 	}
 	}
 	
-	if($cookie_elements = wp_parse_auth_cookie($_COOKIE[LOGGED_IN_COOKIE], 'logged_in')) {
+	if( isset($cookie_elements) && ($cookie_elements = wp_parse_auth_cookie($_COOKIE[LOGGED_IN_COOKIE], 'logged_in') ) ) {
 		
 		extract($cookie_elements, EXTR_OVERWRITE);
 	
