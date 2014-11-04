@@ -33,6 +33,15 @@ $CI_USER = null;
 // most of this gets ignored if we're not in the main site, i.e. if we're in admin, if we're in user registration etc etc
 if	( !is_admin() ) {
 	
+	// Login needs to be excempt from codeigniter
+	$http = isset( $_SERVER['HTTPS'] ) ? 'https://' : 'http://';
+	
+	$host = $http . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
+	
+	$login_url = get_bloginfo( 'url' ) . '/wp-login.php';
+	
+	if ( $host == $login_url ) return;
+
 	include_once( ABSPATH . 'wp-includes/pluggable.php' );
 	
 	// these functions are gotten from pluggable.php, because we need them now, but
