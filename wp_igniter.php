@@ -26,9 +26,11 @@ Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 // global! gotta keep things global, or CI just barfs!
 global $CI_OUTPUT;  // CodeIgniter's output, caught with ob_start() and ob_get_contents()
+global $CI_STATUS;  // CodeIgniter's very own http status, for example to represent its own 404's
 global $CI_REQUEST; // so that CodeIgniter knows about the URI for segmentation, otherwise everything goes through the default controller
 global $CI_USER; // to hold a copy of the wordpress user object, trying to put it in $current_user causes strange bugs
 $CI_USER = null;
+$CI_STATUS = 200;
 
 // most of this gets ignored if we're not in the main site, i.e. if we're in admin, if we're in user registration etc etc
 if(!is_admin()) {
@@ -232,10 +234,11 @@ if(!class_exists('WP_Igniter')) {
 		
 		
  		public function main_page() {
- 			global $wp_query;
+ 			global $wp_query, $CI_STATUS;
  			if(!$wp_query->is_404) { return; }
  			
  			$this->triggered = true;
+			status_header($CI_STATUS);
  			$wp_query->is_404 = false;
  			$wp_query->is_page = true;
  			
