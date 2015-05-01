@@ -72,6 +72,9 @@ file to point to a valid controller, like this: `$route['404_override'] = 'welco
 
 == Changelog ==
 
+= 1.4 =
+* fixed a bug where WordPress was throwing 404's for nearly all CodeIgniter urls
+
 = 1.3 =
 * implemented [wordpressigniter] shortcode, which will deprecate the Page Override setting, as it was quite buggy and had some limitations.
 
