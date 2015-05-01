@@ -2,7 +2,7 @@
 /*
 Plugin Name: WordPressIgniter
 Description: A CodeIgniter Wordpress Plugin
-Version: 1.2
+Version: 1.4
 Author: Dan Hartman
 Author URI: http://www.dynamodan.com
 License: GPL2
