@@ -34,10 +34,16 @@ $CI_STATUS = 200;
 
 // most of this gets ignored if we're not in the main site, i.e. if we're in admin, if we're in user registration etc etc
 if(!is_admin()) {
-	
 	// these functions are gotten from pluggable.php, because we need them now, but
 	// they don't get loaded until after the plugins are loaded!
 	if ( !function_exists('get_user_by')) {
+	/**
+	 * Retrieve user info by a given field
+	 * From wordpress 4.8.3 pluggable.php
+	 * @param string     $field The field to retrieve the user with. id | ID | slug | email | login.
+	 * @param int|string $value A value for $field. A user ID, slug, email address, or login name.
+	 * @return WP_User|false WP_User object on success, false on failure.
+	 */
 	function get_user_by( $field, $value ) {
 		$userdata = WP_User::get_data_by( $field, $value );
 	
@@ -48,10 +54,16 @@ if(!is_admin()) {
 		$user->init( $userdata );
 	
 		return $user;
-	}
+	}	
 	}
 	
 	if ( !function_exists('wp_parse_auth_cookie')) {
+	/**
+	 * From wordpress 4.8.3 pluggable.php
+	 * @param string $cookie
+	 * @param string $scheme Optional. The cookie scheme to use: auth, secure_auth, or logged_in
+	 * @return array|false Authentication cookie components
+	 */
 	function wp_parse_auth_cookie($cookie = '', $scheme = '') {
 		if ( empty($cookie) ) {
 			switch ($scheme){
@@ -80,17 +92,17 @@ if(!is_admin()) {
 		}
 	
 		$cookie_elements = explode('|', $cookie);
-		if ( count($cookie_elements) != 3 )
+		if ( count( $cookie_elements ) !== 4 ) {
 			return false;
+		}
 	
-		list($username, $expiration, $hmac) = $cookie_elements;
+		list( $username, $expiration, $token, $hmac ) = $cookie_elements;
 	
-		return compact('username', 'expiration', 'hmac', 'scheme');
+		return compact( 'username', 'expiration', 'token', 'hmac', 'scheme' );
 	}
 	}
 	
 	if($cookie_elements = wp_parse_auth_cookie($_COOKIE[LOGGED_IN_COOKIE], 'logged_in')) {
-		
 		extract($cookie_elements, EXTR_OVERWRITE);
 	
 		$expired = $expiration;
@@ -142,18 +154,12 @@ if(!is_admin()) {
 			$errmsg = "Your system folder path $system_path does not appear to be set correctly.";
 		}
 
-		// The name of THIS file
-		define('SELF', pathinfo($ci_path.'/index.php', PATHINFO_BASENAME));
-	
 		// The PHP file extension
 		// this global constant is deprecated.
 		define('EXT', '.php');
 	
 		// Path to the system folder
 		define('BASEPATH', str_replace("\\", "/", $system_path));
-	
-		// Path to the front controller (this file)
-		define('FCPATH', str_replace(SELF, '', $ci_path.'/index.php'));
 	
 		// Name of the "system folder"
 		define('SYSDIR', trim(strrchr(trim(BASEPATH, '/'), '/'), '/'));
@@ -162,12 +168,14 @@ if(!is_admin()) {
 		// The path to the "application" folder
 		if (is_dir($application_folder)) {
 			define('APPPATH', $application_folder.'/');
+			define('VIEWPATH', $application_folder.'/views/');
 		} else {
 			if ( ! is_dir(BASEPATH.$application_folder.'/')) {
 				$errmsg = "Your application folder path $application_folder does not appear to be set correctly.";
 			}
 	
 			define('APPPATH', BASEPATH.$application_folder.'/');
+			define('VIEWPATH', BASEPATH.$application_folder.'/views/');
 		}
 
 		// load the ci bootstrap file here instead of letting CI's native index.php do it: 
@@ -271,9 +279,11 @@ if(!class_exists('WP_Igniter')) {
 			// triggered by a 404, so we should handle as such:
 			if($this->triggered) {
 				$content = 'Congrats, you got to the WordPressIgniter Plugin!';
-				if(!get_option('wp_igniter_ci_path')) { $content .= "<br />You need to set the path to the CodeIgniter front controller."; return $content; } 
-				$ci_path = get_option('wp_igniter_ci_path').'index.php';
-				if(!file_exists($ci_path)) { return "Couldn't locate path ".$ci_path; }
+				if(!get_option('wp_igniter_ci_path')) { $content .= "<br />You need to set the path to the CodeIgniter base dir."; return $content; } 
+				$front_controller = get_option('wp_igniter_ci_path').'index.php';
+				
+				// only throw this if the front controller is being used
+				if(defined(FCPATH) && !file_exists(FCPATH)) { return "Couldn't locate path ".$front_controller; }
 				
 				
 				return $CI_OUTPUT;
