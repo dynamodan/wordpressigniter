@@ -122,7 +122,7 @@ if(!is_admin()) {
 	$errmsg = '';
 	
 	
-	// always force CodeIgniter to load it's default controller, 
+	// always force CodeIgniter to load its default controller, 
 	// unless the user specifically has a hook to get the $_SERVER['REQUEST_URI'] back:
 	$CI_REQUEST = $_SERVER['REQUEST_URI'];
 	$get_backup = $_GET; // because CodeIgniter clobbers it, but parts of wordpress need it
